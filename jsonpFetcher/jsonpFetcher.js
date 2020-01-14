@@ -29,6 +29,19 @@
  */
 
 
+var jsonpDispatcher = {};
 
 var jsonpRequest = function(url, callback) {
-};
+
+  var key = Math.random();
+
+  jsonpDispatcher[key] = function () {
+    callback.apply(this, arguments);
+    delete jsonpDispatcher[key];
+  };
+
+  var script = document.createElement('script');
+  script.src = url + '?callback=jsonpDispatcher[' + key + ']';
+
+  document.body.appendChild(script);
+  };
